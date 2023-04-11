@@ -13,6 +13,7 @@ public class Sender {
 	private int currentSequenceNumber; // should be 3 bits 0-7
 	private int maxFrameToSend;
 	private int totalFramesSent = 0;
+	private int max_allowed_to_send = 4;
 
 	private Receiver receiver;
 	private ScheduledExecutorService retransmissionTimer;
@@ -84,18 +85,23 @@ public class Sender {
 		try {
 			while (totalFramesSent <= maxFrameToSend) {
 				if (!buffer.isFull()) {
-					// generate a random number between 1 and 100 to simulate the loss probability
-					int randomNumber = random.nextInt(100) + 1;
-					Frame frame;
-					if (randomNumber > 70) {
-						frame = new Frame(currentSequenceNumber, "Payload " + currentSequenceNumber, true);
-					} else {
-						frame = new Frame(currentSequenceNumber, "Payload " + currentSequenceNumber, false);
-					}
+					for (int i = 0; i < max_allowed_to_send; i++) {
+						if (buffer.isFull()) {
+							break;
+						}
+						// generate a random number between 1 and 100 to simulate the loss probability
+						int randomNumber = random.nextInt(100) + 1;
+						Frame frame;
+						if (randomNumber > 70) {
+							frame = new Frame(currentSequenceNumber, "Payload " + currentSequenceNumber, true);
+						} else {
+							frame = new Frame(currentSequenceNumber, "Payload " + currentSequenceNumber, false);
+						}
 
-					buffer.addFrame(frame);
-					sendFrame(frame);
-					currentSequenceNumber = (currentSequenceNumber + 1) % 8;
+						buffer.addFrame(frame);
+						sendFrame(frame);
+						currentSequenceNumber = (currentSequenceNumber + 1) % 8;
+					}
 				} else {
 					// Simulate receiving acknowledgments
 					int receivedSequenceNumber = random.nextInt(windowSize);
