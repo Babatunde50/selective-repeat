@@ -11,15 +11,18 @@ public class Sender {
 	private CircularBuffer buffer;
 	private int windowSize;
 	private int currentSequenceNumber; // should be 3 bits 0-7
+	private int maxFrameToSend;
+	private int totalFramesSent = 0;
 
 	private Receiver receiver;
 	private ScheduledExecutorService retransmissionTimer;
 
-	public Sender(int windowSize, Receiver receiver) {
+	public Sender(int windowSize, Receiver receiver, int maxFrameToSend) {
 		this.windowSize = windowSize;
 		this.buffer = new CircularBuffer(windowSize);
 		this.currentSequenceNumber = 0;
 		this.receiver = receiver;
+		this.maxFrameToSend = maxFrameToSend;
 
 		this.retransmissionTimer = Executors.newSingleThreadScheduledExecutor();
 		this.retransmissionTimer.scheduleAtFixedRate(this::checkForExpiredTimers, 100, 100, TimeUnit.MILLISECONDS);
@@ -40,9 +43,10 @@ public class Sender {
 		Logger.printMessage("Sending frame with sequence number " + frame.getSequenceNumber() + " and payload: "
 				+ frame.getPayload(), Ansi.Color.BLUE);
 
-		Logger.logBuffer(buffer, windowSize, currentSequenceNumber);
+		Logger.logBuffer(buffer, windowSize, currentSequenceNumber, maxFrameToSend, totalFramesSent);
 		frame.setRetransmissionTimer(System.currentTimeMillis()); // Record the send time
 		receiver.receiveFrame(frame);
+		totalFramesSent += 1;
 	}
 
 	public void resendFrame(int sequenceNumber) {
@@ -51,8 +55,16 @@ public class Sender {
 			Logger.printMessage("Resending frame with sequence number: " + frame.getSequenceNumber()
 					+ " and payload: " + frame.getPayload(), Ansi.Color.BLUE);
 
-			Logger.logBuffer(buffer, windowSize, currentSequenceNumber);
+			Random random = new Random();
+
+			Logger.logBuffer(buffer, windowSize, currentSequenceNumber, maxFrameToSend, totalFramesSent);
 			frame.setRetransmissionTimer(System.currentTimeMillis()); // Record the send time
+			int randomNumber = random.nextInt(100) + 1;
+			if (randomNumber > 70) {
+				frame.setCorrupted(true);
+			} else {
+				frame.setCorrupted(false);
+			}
 			receiver.receiveFrame(frame);
 		}
 	}
@@ -62,7 +74,7 @@ public class Sender {
 		if (frame != null) {
 			frame.setAcknowledged(true);
 			Logger.printMessage("Acknowledgment received for sequence number: " + sequenceNumber, Ansi.Color.GREEN);
-			Logger.logBuffer(buffer, windowSize, currentSequenceNumber);
+			Logger.logBuffer(buffer, windowSize, currentSequenceNumber, maxFrameToSend, totalFramesSent);
 		}
 	}
 
@@ -70,9 +82,17 @@ public class Sender {
 		Random random = new Random();
 
 		try {
-			while (true) {
+			while (totalFramesSent <= maxFrameToSend) {
 				if (!buffer.isFull()) {
-					Frame frame = new Frame(currentSequenceNumber, "Payload " + currentSequenceNumber);
+					// generate a random number between 1 and 100 to simulate the loss probability
+					int randomNumber = random.nextInt(100) + 1;
+					Frame frame;
+					if (randomNumber > 70) {
+						frame = new Frame(currentSequenceNumber, "Payload " + currentSequenceNumber, true);
+					} else {
+						frame = new Frame(currentSequenceNumber, "Payload " + currentSequenceNumber, false);
+					}
+
 					buffer.addFrame(frame);
 					sendFrame(frame);
 					currentSequenceNumber = (currentSequenceNumber + 1) % 8;
@@ -95,7 +115,7 @@ public class Sender {
 				}
 
 				// Add a delay to slow down the execution
-				Thread.sleep(100);
+				Thread.sleep(random.nextInt(1000) + 1);
 			}
 		} catch (InterruptedException e) {
 

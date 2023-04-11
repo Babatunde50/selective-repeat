@@ -11,7 +11,7 @@ public class Main {
 
 	public static void main(String[] args) {
 		int windowSize = 4;
-		double lossProbability = 0.2;
+		int maxFriameToSend = 100;
 
 		SenderHolder senderHolder = new SenderHolder();
 
@@ -21,10 +21,10 @@ public class Main {
 			if (senderHolder.sender != null) {
 				senderHolder.sender.receiveAcknowledgment(sequenceNumber);
 			}
-		}, lossProbability);
+		});
 
 		// Initialize the Sender instance and store it in the SenderHolder
-		senderHolder.sender = new Sender(windowSize, receiver);
+		senderHolder.sender = new Sender(windowSize, receiver, maxFriameToSend);
 
 		// Start the Sender
 		senderHolder.sender.run();

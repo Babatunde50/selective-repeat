@@ -7,25 +7,33 @@ import org.fusesource.jansi.Ansi;
 public class Receiver {
 	private Consumer<Integer> onAcknowledgmentReceived;
 
-	private final double lossProbability;
-	private final Random random;
-
-	public Receiver(Consumer<Integer> onAcknowledgmentReceived, double lossProbability) {
+	public Receiver(Consumer<Integer> onAcknowledgmentReceived) {
 		this.onAcknowledgmentReceived = onAcknowledgmentReceived;
-		this.lossProbability = lossProbability;
-		this.random = new Random();
+
 	}
 
 	public void receiveFrame(Frame frame) {
 		Logger.printMessage("Receiver received frame with sequence number: " + frame.getSequenceNumber()
 				+ "and payload: " + frame.getPayload(), Ansi.Color.BLUE);
 
-		sendAcknowledgment(frame.getSequenceNumber());
+		Random random = new Random();
+
+		try {
+			Thread.sleep(random.nextInt(1000) + 1);
+			sendAcknowledgment(frame.getSequenceNumber(), frame.isCorrupted());
+		} catch (InterruptedException e) {
+
+			Logger.printMessage("Receiver interrupted " + e.getMessage(), Ansi.Color.RED);
+			// Restore the interrupted status
+			Thread.currentThread().interrupt();
+
+		}
+
 	}
 
-	private void sendAcknowledgment(int sequenceNumber) {
-		// Check if the acknowledgment should be sent or not
-		if (random.nextDouble() >= lossProbability) {
+	private void sendAcknowledgment(int sequenceNumber, boolean isCorrupted) {
+		// Check if the frame is not corrupted
+		if (!isCorrupted) {
 			onAcknowledgmentReceived.accept(sequenceNumber);
 		} else {
 			// Simulate packet loss by not sending the acknowledgment

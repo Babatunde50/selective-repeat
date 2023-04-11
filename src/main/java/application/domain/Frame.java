@@ -1,18 +1,18 @@
 package application.domain;
 
-
 public class Frame {
 
 	private int sequenceNumber;
 	private String payload;
 	private boolean isAcknowledged;
 	private Long retransmissionTimer;
+	private boolean isCorrupted;
 
 	/*
 	 * --------------- CONSTRUCTOR
 	 */
 
-	public Frame(int sequenceNumber, String payload) {
+	public Frame(int sequenceNumber, String payload, boolean isCorrupted) {
 
 		if (payload == null || (payload != null && payload.isBlank())) {
 			throw new IllegalArgumentException("[FRAME] ERROR: frame payload content is empty or null.");
@@ -22,6 +22,7 @@ public class Frame {
 		this.payload = payload;
 		this.isAcknowledged = false;
 		this.retransmissionTimer = null;
+		this.isCorrupted = isCorrupted;
 
 	}
 
@@ -42,6 +43,10 @@ public class Frame {
 		return retransmissionTimer;
 	}
 
+	public boolean isCorrupted() {
+		return isCorrupted;
+	}
+
 	// Setters
 	public void setSequenceNumber(int sequenceNumber) {
 		this.sequenceNumber = sequenceNumber;
@@ -57,6 +62,10 @@ public class Frame {
 
 	public void setRetransmissionTimer(Long retransmissionTimer) {
 		this.retransmissionTimer = retransmissionTimer;
+	}
+
+	public void setCorrupted(boolean isCorrupted) {
+		this.isCorrupted = isCorrupted;
 	}
 
 }

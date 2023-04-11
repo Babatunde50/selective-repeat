@@ -5,7 +5,8 @@ import org.fusesource.jansi.AnsiConsole;
 import org.fusesource.jansi.Ansi.Color;
 
 public class Logger {
-    public static void logBuffer(CircularBuffer buffer, int windowSize, int currentSequenceNumber) {
+    public static void logBuffer(CircularBuffer buffer, int windowSize, int currentSequenceNumber, int maxFrameToSend,
+            int totalFramesSent) {
         AnsiConsole.systemInstall();
 
         StringBuilder sb = new StringBuilder();
@@ -16,7 +17,8 @@ public class Logger {
             if (frame != null) {
                 sb.append("Seq: ").append(frame.getSequenceNumber())
                         .append(", Payload: ").append(frame.getPayload())
-                        .append(", Ack: ").append(frame.isAcknowledged());
+                        .append(", Ack: ").append(frame.isAcknowledged())
+                        .append(", isCorrupted: ").append(frame.isCorrupted());
             } else {
                 sb.append("Seq: ").append(i).append(" (Empty)");
             }
@@ -31,6 +33,10 @@ public class Logger {
 
             sb.append("\n");
         }
+
+        sb.append(Ansi.ansi().bold().fg(Ansi.Color.MAGENTA).a("Max Frame to Send: ").reset().a(maxFrameToSend).a("\n"));
+        sb.append(
+                Ansi.ansi().bold().fg(Ansi.Color.MAGENTA).a("Total Frames Sent: ").reset().a(totalFramesSent).a("\n"));
 
         AnsiConsole.out().println(sb.toString());
         AnsiConsole.systemUninstall();
