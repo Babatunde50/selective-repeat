@@ -11,7 +11,7 @@ public class Main {
 
 	public static void main(String[] args) {
 		int windowSize = 4;
-		int maxFriameToSend = 100;
+		int maxFrameToSend = 100;
 
 		SenderHolder senderHolder = new SenderHolder();
 
@@ -24,7 +24,7 @@ public class Main {
 		});
 
 		// Initialize the Sender instance and store it in the SenderHolder
-		senderHolder.sender = new Sender(windowSize, receiver, maxFriameToSend);
+		senderHolder.sender = new Sender(windowSize, receiver, maxFrameToSend);
 
 		// Start the Sender
 		senderHolder.sender.run();

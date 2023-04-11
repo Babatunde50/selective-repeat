@@ -126,6 +126,10 @@ public class Sender {
 		} catch (InterruptedException e) {
 
 			Logger.printMessage("Sender interrupted", Ansi.Color.RED);
+		} finally {
+			retransmissionTimer.shutdown();
+			Logger.printMessage("No more frames to send: gracefully shutting down...", Ansi.Color.RED);
+			System.exit(0);
 		}
 	}
 
