@@ -1,54 +1,38 @@
-#  Repeat Sliding Window Protocol in Java
+## Selective Repeat
 
-This project is an implementation of the sliding window protocol using selective repeat in Java. It simulates the transmission of frames between a sender and a receiver, demonstrating the sender and receiver window updates.
+###Overview
+This project simulates a selective-repeat protocol with a sliding window for reliable data transmission. The implementation consists of a Logger class for logging events, a CircularBuffer class for managing the sliding window, a Frame class for representing data packets, and separate Sender and Receiver classes for handling the transmission process. The Main class ties everything together and allows users to configure and run the simulation.
 
-## Overview
-The project contains the following main components:
+### Requirements
 
-Frame class: Represents the frame structure, containing the sequence number, payload, and a flag for corrupted frames.
+Java JDK (version X or higher)
+Jansi library (version 2.3.4 or higher)
+Maven
 
-Sender class: Handles the sliding window protocol for the sender side, including frame generation, corruption simulation, and random sleep duration.
+### Running the Project
 
-Receiver class: Handles the sliding window protocol for the receiver side, including frame processing, and random sleep duration.
+Clone the repository:
 
-SelectiveRepeat class: Simulates the transmission of frames between the sender and receiver, coordinating the sending and receiving processes.
+```
+git clone https://github.com/Babatunde50/selective-repeat.git
+```
 
-Main class: Contains the main() method that starts the simulation.
+Change to the project directory:
 
-## Usage
-To run the simulation, simply compile and run the Main class. The output will display the sender and receiver window updates as frames are sent and received.
+```
+cd selective-repeat
+```
 
-## Implementation Details
+Compile the project:
 
-Frame Class The Frame class should contain the following fields:
+```
+mvn clean compile
+```
 
-Sequence number
-Payload
-Corrupted flag
-Sender Class
+Run the project:
 
-The Sender class should include the following methods:
+```
+mvn exec:java -Dexec.mainClass="application.main.Main"
+```
 
-sendFrames(): Generates a random number of frames between 1 and max_allowed_to_send, and sends them.
-sendFrame(Frame frame): Simulates sending a frame, setting the corrupted flag if the random number is >70.
-sleepRandom(): Makes the sender sleep for a random duration of time.
-Receiver Class
-
-The Receiver class should include the following methods:
-
-receiveFrame(Frame frame): Receives a frame and processes it based on the sliding window protocol.
-sleepRandom(): Makes the receiver sleep for a random duration of time.
-SelectiveRepeat Class
-
-The SelectiveRepeat class should include the following methods:
-
-simulate(): Iterates through the maximum number of frames to send and simulates the sending and receiving process.
-
-Main Class
-The Main class should contain the main() method that creates an instance of the SelectiveRepeat class and starts the simulation.
-
-## Tips
-Use the Thread.sleep() method to make the sender and receiver sleep for a random duration.
-Use the java.util.Random class to generate random numbers for frame corruption and sleep durations.
-Synchronize the sending and receiving methods to avoid race conditions.
-Properly handle exceptions (e.g., InterruptedException) when using Thread.sleep().
+The application will start and run the selective-repeat protocol simulation based on the specified window size and packet loss probability.
