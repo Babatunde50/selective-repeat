@@ -1,6 +1,6 @@
 ## Selective Repeat
 
-###Overview
+### Overview
 This project simulates a selective-repeat protocol with a sliding window for reliable data transmission. The implementation consists of a Logger class for logging events, a CircularBuffer class for managing the sliding window, a Frame class for representing data packets, and separate Sender and Receiver classes for handling the transmission process. The Main class ties everything together and allows users to configure and run the simulation.
 
 ### Requirements
