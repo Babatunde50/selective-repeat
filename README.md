@@ -1,4 +1,4 @@
-# selective-repeatSelective Repeat Sliding Window Protocol in Java
+#  Repeat Sliding Window Protocol in Java
 
 This project is an implementation of the sliding window protocol using selective repeat in Java. It simulates the transmission of frames between a sender and a receiver, demonstrating the sender and receiver window updates.
 
