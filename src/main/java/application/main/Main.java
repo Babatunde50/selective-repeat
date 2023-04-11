@@ -1,12 +1,32 @@
 package application.main;
 
+import application.domain.Receiver;
+import application.domain.Sender;
+
 public class Main {
 
-	/*
-	 * Execution simulation.
-	 */
+	private static class SenderHolder {
+		private Sender sender;
+	}
+
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+		int windowSize = 4;
+
+		SenderHolder senderHolder = new SenderHolder();
+
+		// Create the Receiver instance and define its behavior
+		Receiver receiver = new Receiver(sequenceNumber -> {
+			// Handle received acknowledgments
+			if (senderHolder.sender != null) {
+				senderHolder.sender.receiveAcknowledgment(sequenceNumber);
+			}
+		}, 0.9);
+
+		// Initialize the Sender instance and store it in the SenderHolder
+		senderHolder.sender = new Sender(windowSize, receiver);
+
+		// Start the Sender
+		senderHolder.sender.run();
 	}
 
 }

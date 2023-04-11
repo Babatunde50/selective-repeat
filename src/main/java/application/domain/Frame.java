@@ -1,67 +1,62 @@
 package application.domain;
 
-/**
- * Representation of a frame, with a given:
- * 	- sequence number
- * 	- payload [message content]
- * 	- flag [whether the frame is corrupted or not]
- * 
- * @author Adriana R.F.
- * @version 1.0 Single
- */
+
 public class Frame {
-	
-	private final static int SEQ_BITS = 3; // n=3, for sliding window impl.
-	private String payload; // Content of the frame itself
-	private boolean flag = false; // Uncorrupted by default
-	
-	
+
+	private int sequenceNumber;
+	private String payload;
+	private boolean isAcknowledged;
+	private Long retransmissionTimer;
+
 	/*
 	 * --------------- CONSTRUCTOR
 	 */
-	
-	public Frame(String payload) {
+
+	public Frame(int sequenceNumber, String payload) {
+
 		if (payload == null || (payload != null && payload.isBlank())) {
 			throw new IllegalArgumentException("[FRAME] ERROR: frame payload content is empty or null.");
 		}
+
+		this.sequenceNumber = sequenceNumber;
 		this.payload = payload;
-	}
-	
-	
-	/*
-	 * --------------- PUBLIC METHODS
-	 */
+		this.isAcknowledged = false;
+		this.retransmissionTimer = null;
 
-	
-	/**
-	 * Establishes whether a given frame is corrupted or not.
-	 * 
-	 * @param corrupted (true/false -> flag)
-	 */
-	public void setCorrupted(boolean corrupted) {
-		this.flag = corrupted;
 	}
 
-	/**
-	 * @return payload content of the frame
-	 */
+	// Getters
+	public int getSequenceNumber() {
+		return sequenceNumber;
+	}
+
 	public String getPayload() {
 		return payload;
 	}
-	
-	/**
-	 * @return n (number of bits in seq. number -> window size - 1)
-	 */
-	public int getSeqNumberBits() {
-		return SEQ_BITS;
+
+	public boolean isAcknowledged() {
+		return isAcknowledged;
 	}
 
-	/**
-	 * @return frame flag (if set, frame is corrupted)
-	 */
-	public boolean isCorrupted() {
-		return flag;
-	}	
-	
-	
+	public Long getRetransmissionTimer() {
+		return retransmissionTimer;
+	}
+
+	// Setters
+	public void setSequenceNumber(int sequenceNumber) {
+		this.sequenceNumber = sequenceNumber;
+	}
+
+	public void setPayload(String payload) {
+		this.payload = payload;
+	}
+
+	public void setAcknowledged(boolean isAcknowledged) {
+		this.isAcknowledged = isAcknowledged;
+	}
+
+	public void setRetransmissionTimer(Long retransmissionTimer) {
+		this.retransmissionTimer = retransmissionTimer;
+	}
+
 }
