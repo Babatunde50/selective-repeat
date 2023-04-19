@@ -6,13 +6,27 @@ This project simulates a selective-repeat protocol with a sliding window for rel
 ![Selective Repeat](https://www.tutorialspoint.com/assets/questions/media/59904/15.jpg)
 
 
-### Requirements
+### Running the Project using Github actions
 
-Java JDK (version X or higher)
-Jansi library (version 2.3.4 or higher)
-Maven
+To run the project using GitHub Actions:
 
-### Running the Project
+- Navigate to the "Actions" tab in your GitHub repository.
+
+- Find the "Compile and Run" workflow in the list of available workflows.
+
+- Click "Run workflow" to start the workflow manually. The project will be compiled and run using the specified configuration.
+
+- To view the progress and logs of the workflow, click on the specific run of the "Compile and Run" workflow.
+
+
+### Running the Project on your local machine
+
+Requirements
+
+- Java JDK (version X or higher)
+- Jansi library (version 2.3.4 or higher)
+- Maven
+
 
 Clone the repository:
 
