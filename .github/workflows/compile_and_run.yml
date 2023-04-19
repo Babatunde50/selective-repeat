@@ -1,10 +1,10 @@
-name: Run Project 
+name: Compile and Run 
 
 on: workflow_dispatch 
 
 jobs: 
 
-  compile: 
+  compile_and_run: 
     runs-on: ubuntu-latest 
 
     steps: 
@@ -16,3 +16,7 @@ jobs:
           distribution: 'temurin'
       - name: Build with Maven
         run: mvn --batch-mode --update-snapshots package
+      - name: Compile 
+        run: mvn clean compile 
+      - name: Run 
+        run: mvn exec:java -Dexec.mainClass="application.main.Main"
