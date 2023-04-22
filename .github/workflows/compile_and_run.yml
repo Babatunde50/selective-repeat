@@ -18,5 +18,10 @@ jobs:
         run: mvn --batch-mode --update-snapshots package
       - name: Compile 
         run: mvn clean compile 
+      - name: download artifacts
+        uses: actions/download-artifact@v3
+        with: 
+          name: bin  
+          path: target/classes
       - name: Run 
         run: mvn exec:java -Dexec.mainClass="application.main.Main"
